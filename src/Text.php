@@ -18,18 +18,26 @@ class Text extends Base
      *
      * @var string
      */
-    protected $msgtype = "text";
+    protected $MsgType = "text";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
-        if (! isset($this->properties['Content']))
+        $validateList = [
+            "Content",
+        ];
+        foreach ($validateList as $property)
         {
-            return false;
+            if (! isset($tree[$property]))
+            {
+                return false;
+            }
+            $this->properties[$property] = $tree[$property];
         }
         return true;
     }
@@ -42,10 +50,7 @@ class Text extends Base
      */
     public function setContent(string $text)
     {
-        $this->properties['Content'] = [
-            "type"  => "CDATA",
-            "value" => $text,
-        ];
+        $this->properties['Content'] = $text;
         return $this;
     }
 }

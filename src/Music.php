@@ -18,19 +18,28 @@ class Music extends Base
      *
      * @var string
      */
-    protected $msgtype = "music";
+    protected $MsgType = "music";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
-        if (! isset($this->properties['ThumbMediaId']))
+        $validateList = [
+            "ThumbMediaId",
+        ];
+        foreach ($validateList as $property)
         {
-            return false;
+            if (! isset($tree[$property]))
+            {
+                return false;
+            }
+            $this->properties[$property] = $tree[$property];
         }
+        // TODO: 设置可选属性
         return true;
     }
 
@@ -42,10 +51,7 @@ class Music extends Base
      */
     public function setTitle(string $title)
     {
-        $this->properties["Title"] = [
-            "type"  => "CDATA",
-            "value" => $title,
-        ];
+        $this->properties["Title"] = $title;
         return $this;
     }
 
@@ -57,10 +63,7 @@ class Music extends Base
      */
     public function setDescription(string $description)
     {
-        $this->properties["Description"] = [
-            "type"  => "CDATA",
-            "value" => $description,
-        ];
+        $this->properties["Description"] = $description;
         return $this;
     }
 
@@ -72,10 +75,7 @@ class Music extends Base
      */
     public function setThumbMediaId(string $thumbMediaId)
     {
-        $this->properties["ThumbMediaId"] = [
-            "type"  => "CDATA",
-            "value" => $thumbMediaId,
-        ];
+        $this->properties["ThumbMediaId"] = $thumbMediaId;
         return $this;
     }
 
@@ -87,10 +87,7 @@ class Music extends Base
      */
     public function setMusicUrl(string $MusicUrl)
     {
-        $this->properties["MusicUrl"] = [
-            "type"  => "CDATA",
-            "value" => $MusicUrl,
-        ];
+        $this->properties["MusicUrl"] = $MusicUrl;
         return $this;
     }
     
@@ -102,10 +99,7 @@ class Music extends Base
      */
     public function setHQMusicUrl(string $HQMusicUrl)
     {
-        $this->properties["HQMusicUrl"] = [
-            "type"  => "CDATA",
-            "value" => $HQMusicUrl,
-        ];
+        $this->properties["HQMusicUrl"] = $HQMusicUrl;
         return $this;
     }
 }

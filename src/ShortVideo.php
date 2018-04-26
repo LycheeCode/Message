@@ -18,14 +18,15 @@ class ShortVideo extends Base
      *
      * @var string
      */
-    protected $msgtype = "shortvideo";
+    protected $MsgType = "shortvideo";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
         $validateList = [
             "MediaId",
@@ -33,10 +34,11 @@ class ShortVideo extends Base
         ];
         foreach ($validateList as $property)
         {
-            if (! isset($this->properties[$property]))
+            if (! isset($tree[$property]))
             {
                 return false;
             }
+            $this->properties[$property] = $tree[$property];
         }
         return true;
     }
@@ -49,10 +51,7 @@ class ShortVideo extends Base
      */
     public function setMediaId(string $mediaId)
     {
-        $this->properties["MediaId"] = [
-            "type"  => "CDATA",
-            "value" => $mediaId,
-        ];
+        $this->properties["MediaId"] = $mediaId;
         return $this;
     }
 
@@ -64,10 +63,7 @@ class ShortVideo extends Base
      */
     public function setThumbMediaId(string $thumbMediaId)
     {
-        $this->properties["ThumbMediaId"] = [
-            "type"  => "CDATA",
-            "value" => $thumbMediaId,
-        ];
+        $this->properties["ThumbMediaId"] = $thumbMediaId;
         return $this;
     }
 }

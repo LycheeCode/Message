@@ -18,25 +18,28 @@ class Voice extends Base
      *
      * @var string
      */
-    protected $msgtype = "voice";
+    protected $MsgType = "voice";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
         $validateList = [
             "MediaId",
         ];
         foreach ($validateList as $property)
         {
-            if (! isset($this->properties[$property]))
+            if (! isset($tree[$property]))
             {
                 return false;
             }
+            $this->properties[$property] = $tree[$property];
         }
+        // TODO: 设置可选属性
         return true;
     }
 
@@ -48,10 +51,7 @@ class Voice extends Base
      */
     public function setMediaId(string $mediaId)
     {
-        $this->properties["MediaId"] = [
-            "type"  => "CDATA",
-            "value" => $mediaId,
-        ];
+        $this->properties["MediaId"] = $mediaId;
         return $this;
     }
 
@@ -63,10 +63,7 @@ class Voice extends Base
      */
     public function setFormat(string $format)
     {
-        $this->properties["Format"] = [
-            "type"  => "CDATA",
-            "value" => $format,
-        ];
+        $this->properties["Format"] = $format;
         return $this;
     }
 
@@ -78,10 +75,7 @@ class Voice extends Base
      */
     public function setRecognition(string $recognition)
     {
-        $this->properties["Recognition"] = [
-            "type"  => "CDATA",
-            "value" => $recognition,
-        ];
+        $this->properties["Recognition"] = $recognition;
         return $this;
     }
 }

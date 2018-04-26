@@ -18,35 +18,35 @@ abstract class Base
      *
      * @var string
      */
-    protected $tousername;
+    protected $ToUserName;
 
     /**
      * 消息发送者
      *
      * @var string
      */
-    protected $fromusername;
+    protected $FromUserName;
 
     /**
      * 消息创建时间，UNIX 时间戳
      *
      * @var int
      */
-    protected $createtime;
+    protected $CreateTime;
 
     /**
      * 消息类型
      *
      * @var string
      */
-    protected $msgtype;
+    protected $MsgType;
 
     /**
      * 消息 id，64 位整型
      *
      * @var int
      */
-    protected $msgid;
+    protected $MsgId;
 
     /**
      * 消息属性
@@ -75,64 +75,9 @@ abstract class Base
         }
 
         // 从 XML 中创建一个消息类
-        $doc = new DOMDocument;
-        $doc->loadXML($xml);
-        $msg = $doc->getElementsByTagName("xml");
-        if (! $msg->length)
-        {
-            throw new Exception("Invalid msg");
-        }
-        $msg = $msg->item(0);
-        foreach ($msg->childNodes as $msgItem)
-        {
-            if (! $msgItem->hasChildNodes())
-            {
-                continue;
-            }
-            foreach ($msgItem->childNodes as $msgValue)
-            {
-                if (strtolower($msgItem->nodeName) == "msgtype")
-                {
-                    if ($msgValue->nodeValue != $this->msgtype)
-                    {
-                        throw new \Exception("Invalid message type");
-                    }
-                    continue;
-                }
+        $msgTree = $this->fromXML($xml);
 
-                if ( in_array(
-                        strtolower($msgItem->nodeName),
-                        [
-                            "createtime",
-                            "fromusername",
-                            "tousername",
-                            "msgid"
-                        ])
-                    )
-                {
-                    $baseProperty = strtolower($msgItem->nodeName);
-                    $this->$baseProperty = $msgValue->nodeValue;
-                }
-
-                if ($msgValue->nodeType == XML_CDATA_SECTION_NODE)
-                {
-                    $this->properties[$msgItem->nodeName] = [
-                        "type"  => "CDATA",
-                        "value" => $msgValue->nodeValue
-                    ];
-                }
-                else
-                {
-                    $this->properties[$msgItem->nodeName] = [
-                        "type"  => "NORMAL",
-                        "value" => $msgValue->nodeValue
-                    ];
-                }
-
-            } // foreach ($msgItem->childNodes as $msgValue)
-        }
-
-        if (! $this->validateProperties())
+        if (! $this->validateProperties($msgTree))
         {
             throw new \Exception("Validate properties failed");
         }
@@ -143,7 +88,37 @@ abstract class Base
      *
      * @return boolean
      */
-    abstract protected function validateProperties(): bool;
+    abstract protected function validateProperties(array $tree): bool;
+
+    public function fromXML(string $xml): array
+    {
+        $doc = new DOMDocument;
+        $doc->loadXML($xml);
+        $msg = $doc->getElementsByTagName("xml");
+        if (! $msg->length)
+        {
+            throw new Exception("Invalid msg");
+        }
+        $msg = $msg->item(0);
+        $msgTree = $this->traverseXML($msg);
+        if (! isset($msgTree['MsgType'])
+         || $msgTree['MsgType'] != $this->MsgType)
+        {
+            throw new \Exception("Invalid message type");
+        }
+        if (! isset($msgTree['FromUserName'])
+         || ! isset($msgTree['ToUserName'])
+         || ! isset($msgTree['CreateTime']))
+        {
+            throw new \Exception("Invalid message");
+        }
+        $this->FromUserName = $msgTree['FromUserName'];
+        $this->ToUserName = $msgTree['ToUserName'];
+        $this->CreateTime = $msgTree['CreateTime'];
+        $this->MsgId = isset($msgTree['MsgId']) ? $msgTree['MsgId'] : null;
+
+        return $msgTree;
+    }
 
     /**
      * 将 message model 转换成 XML 字符串
@@ -152,64 +127,97 @@ abstract class Base
      */
     public function toXML(): string
     {
-        if (! $this->validateProperties())
+        if (! $this->validateProperties($this->properties))
         {
             throw new \Exception("Validate properties failed");
         }
         $base = [
-            "ToUserName" => [
-                "type"  => "CDATA",
-                "value" => $this->tousername,
-            ],
-            "FromUserName" => [
-                "type"  => "CDATA",
-                "value" => $this->fromusername,
-            ],
-            "CreateTime" => [
-                "type"  => "NORMAL",
-                "value" => $this->createtime,
-            ],
-            "MsgType" => [
-                "type"  => "CDATA",
-                "value" => $this->msgtype,
-            ],
+            "ToUserName" => $this->ToUserName,
+            "FromUserName" => $this->FromUserName,
+            "CreateTime" => $this->CreateTime,
+            "MsgType" => $this->MsgType,
         ];
-        if (! is_null($this->msgid))
+        if (! is_null($this->MsgId))
         {
-            $base["MsgId"] = [
-                "type"  => "NORMAL",
-                "value" => $this->msgid,
-            ];
+            $base["MsgId"] = $this->MsgId;
         }
         $datas = $base + $this->properties;
-        return $this->buildXML($datas);
+        
+        $dom = new DOMDocument;
+        $xmlBody = $this->buildXML($datas, "xml", $dom);
+        return $dom->saveXML($xmlBody);
+    }
+
+    private function traverseXML(\DOMElement $element): array
+    {
+        $tree = [];
+        
+        foreach ($element->childNodes as $node)
+        {
+            if (! $node->hasChildNodes())
+            {
+                continue;
+            }
+            foreach ($node->childNodes as $childElement)
+            {
+                if ($childElement->hasChildNodes())
+                {
+                    $tree[$node->nodeName][] = $this->traverseXML($childElement);
+                    continue;
+                }
+                $tree[$node->nodeName] = $childElement->nodeValue;
+
+            } // foreach ($node->childNodes as $childElement)
+        }
+
+        return $tree;
     }
 
     /**
-     * 遍历数组，生成 XML
+     * 遍历数组，生成 XML Node
      *
      * @param array $datas
-     * @return string
+     * @return \DOMNode
      */
-    private function buildXML(array $datas): string
+    private function buildXML(array $datas, string $elementName, \DOMDocument $dom = null): \DOMNode
     {
-        $dom = new DOMDocument;
-        $xmlBody = $dom->createElement("xml");
+        if (is_null($dom))
+        {
+            $dom = new \DOMDocument;
+        }
+        $xmlBody = $dom->createElement($elementName);
         foreach ($datas as $name => $dataProperties)
         {
-            if ($dataProperties["type"] == "CDATA")
+            if (is_array($dataProperties))
             {
+                if (is_numeric($name))
+                {
+                    $name = "item";
+                }
                 $node = $dom->createElement($name);
-                $nodeValue = $xmlBody->ownerDocument->createCDATASection($dataProperties["value"]);
-                $node->appendChild($nodeValue);
+                foreach ($dataProperties as $n => $property)
+                {
+                    if (is_numeric($n))
+                    {
+                        $n = "item";
+                    }
+                    $child = $this->buildXML($property, $n, $dom);
+                    $node->appendChild($child);
+                }
+            }
+            else if (is_numeric($dataProperties))
+            {
+                $node = $dom->createElement($name, $dataProperties);
             }
             else
             {
-                $node = $dom->createElement($name, $dataProperties["value"]);
+                $node = $dom->createElement($name);
+                $nodeValue = $xmlBody->ownerDocument->createCDATASection($dataProperties);
+                $node->appendChild($nodeValue);
             }
             $xmlBody->appendChild($node);
         }
-        return $dom->saveXML($xmlBody);
+        return $xmlBody;
     }
 
     /**
@@ -220,7 +228,7 @@ abstract class Base
      */
     public function setToUserName(string $value)
     {
-        $this->tousername = $value;
+        $this->ToUserName = $value;
         return $this;
     }
 
@@ -232,7 +240,7 @@ abstract class Base
      */
     public function setFromUserName(string $value)
     {
-        $this->fromusername = $value;
+        $this->FromUserName = $value;
         return $this;
     }
 
@@ -244,7 +252,7 @@ abstract class Base
      */
     public function setCreateTime(int $value)
     {
-        $this->createtime = $value;
+        $this->CreateTime = $value;
         return $this;
     }
 
@@ -256,7 +264,7 @@ abstract class Base
      */
     public function setMsgId(int $value)
     {
-        $this->msgid = $value;
+        $this->MsgId = $value;
         return $this;
     }
 
@@ -264,9 +272,8 @@ abstract class Base
     {
         if (in_array($name, ["ToUserName", "FromUserName", "CreateTime", "MsgType", "MsgId"]))
         {
-            $baseProperty = strtolower($name);
-            return $this->$baseProperty;
+            return $this->$name;
         }
-        return isset($this->properties[$name]) ? $this->properties[$name]["value"] : false;
+        return isset($this->properties[$name]) ? $this->properties[$name] : false;
     }
 }

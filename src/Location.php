@@ -18,14 +18,15 @@ class Location extends Base
      *
      * @var string
      */
-    protected $msgtype = "location";
+    protected $MsgType = "location";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
         $validateList = [
             "Location_X",
@@ -35,10 +36,11 @@ class Location extends Base
         ];
         foreach ($validateList as $property)
         {
-            if (! isset($this->properties[$property]))
+            if (! isset($tree[$property]))
             {
                 return false;
             }
+            $this->properties[$property] = $tree[$property];
         }
         return true;
     }
@@ -51,10 +53,7 @@ class Location extends Base
      */
     public function setLocationX(float $x)
     {
-        $this->properties["Location_X"] = [
-            "type"  => "NORMAL",
-            "value" => $x,
-        ];
+        $this->properties["Location_X"] = $x;
         return $this;
     }
     
@@ -66,10 +65,7 @@ class Location extends Base
      */
     public function setLocationY(float $y)
     {
-        $this->properties["Location_Y"] = [
-            "type"  => "NORMAL",
-            "value" => $y,
-        ];
+        $this->properties["Location_Y"] = $y;
         return $this;
     }
 
@@ -81,10 +77,7 @@ class Location extends Base
      */
     public function setScale(int $scale)
     {
-        $this->properties["Scale"] = [
-            "type"  => "NORMAL",
-            "value" => $scale,
-        ];
+        $this->properties["Scale"] = $scale;
         return $this;
     }
 
@@ -96,10 +89,7 @@ class Location extends Base
      */
     public function setLabel(string $label)
     {
-        $this->properties["Label"] = [
-            "type"  => "CDATA",
-            "value" => $label,
-        ];
+        $this->properties["Label"] = $label;
         return $this;
     }
 }

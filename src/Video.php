@@ -18,25 +18,28 @@ class Video extends Base
      *
      * @var string
      */
-    protected $msgtype = "video";
+    protected $MsgType = "video";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
         $validateList = [
             "MediaId",
         ];
         foreach ($validateList as $property)
         {
-            if (! isset($this->properties[$property]))
+            if (! isset($tree[$property]))
             {
                 return false;
             }
+            $this->properties[$property] = $tree[$property];
         }
+        // TODO: 设置可选属性
         return true;
     }
 
@@ -48,10 +51,7 @@ class Video extends Base
      */
     public function setMediaId(string $mediaId)
     {
-        $this->properties["MediaId"] = [
-            "type"  => "CDATA",
-            "value" => $mediaId,
-        ];
+        $this->properties["MediaId"] = $mediaId;
         return $this;
     }
 
@@ -63,10 +63,7 @@ class Video extends Base
      */
     public function setTitle(string $title)
     {
-        $this->properties["Title"] = [
-            "type"  => "CDATA",
-            "value" => $title,
-        ];
+        $this->properties["Title"] = $title;
         return $this;
     }
 
@@ -78,10 +75,7 @@ class Video extends Base
      */
     public function setDescription(string $description)
     {
-        $this->properties["Description"] = [
-            "type"  => "CDATA",
-            "value" => $description,
-        ];
+        $this->properties["Description"] = $description;
         return $this;
     }
 
@@ -93,10 +87,7 @@ class Video extends Base
      */
     public function setThumbMediaId(string $thumbMediaId)
     {
-        $this->properties["ThumbMediaId"] = [
-            "type"  => "CDATA",
-            "value" => $thumbMediaId,
-        ];
+        $this->properties["ThumbMediaId"] = $thumbMediaId;
         return $this;
     }
 }

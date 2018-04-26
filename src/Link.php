@@ -18,14 +18,15 @@ class Link extends Base
      *
      * @var string
      */
-    protected $msgtype = "link";
+    protected $MsgType = "link";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
         $validateList = [
             "Title",
@@ -34,10 +35,11 @@ class Link extends Base
         ];
         foreach ($validateList as $property)
         {
-            if (! isset($this->properties[$property]))
+            if (! isset($tree[$property]))
             {
                 return false;
             }
+            $this->properties[$property] = $tree[$property];
         }
         return true;
     }
@@ -50,10 +52,7 @@ class Link extends Base
      */
     public function setTitle(string $title)
     {
-        $this->properties["Title"] = [
-            "type"  => "CDATA",
-            "value" => $title,
-        ];
+        $this->properties["Title"] = $title;
         return $this;
     }
 
@@ -65,10 +64,7 @@ class Link extends Base
      */
     public function setDescription(string $description)
     {
-        $this->properties["Description"] = [
-            "type"  => "CDATA",
-            "value" => $description,
-        ];
+        $this->properties["Description"] = $description;
         return $this;
     }
 
@@ -80,10 +76,7 @@ class Link extends Base
      */
     public function setUrl(string $url)
     {
-        $this->properties["Url"] = [
-            "type"  => "CDATA",
-            "value" => $url,
-        ];
+        $this->properties["Url"] = $url;
         return $this;
     }
 }

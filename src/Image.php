@@ -18,19 +18,28 @@ class Image extends Base
      *
      * @var string
      */
-    protected $msgtype = "image";
+    protected $MsgType = "image";
 
     /**
      * 检验属性完整性
      *
+     * @param array $tree
      * @return boolean
      */
-    protected function validateProperties(): bool
+    protected function validateProperties(array $tree): bool
     {
-        if (! isset($this->properties['MediaId']))
+        $validateList = [
+            "MediaId",
+        ];
+        foreach ($validateList as $property)
         {
-            return false;
+            if (! isset($tree[$property]))
+            {
+                return false;
+            }
+            $this->properties[$property] = $tree[$property];
         }
+        // TODO: 设置可选属性
         return true;
     }
 
@@ -42,10 +51,7 @@ class Image extends Base
      */
     public function setMediaId(string $mediaId)
     {
-        $this->properties["MediaId"] = [
-            "type"  => "CDATA",
-            "value" => $mediaId,
-        ];
+        $this->properties["MediaId"] = $mediaId;
         return $this;
     }
 
@@ -57,10 +63,7 @@ class Image extends Base
      */
     public function setPicUrl(string $picUrl)
     {
-        $this->properties["PicUrl"] = [
-            "type"  => "CDATA",
-            "value" => $picUrl,
-        ];
+        $this->properties["PicUrl"] = $picUrl;
         return $this;
     }
 }
