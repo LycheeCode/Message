@@ -116,6 +116,10 @@ abstract class Base
         $this->ToUserName = $msgTree['ToUserName'];
         $this->CreateTime = $msgTree['CreateTime'];
         $this->MsgId = isset($msgTree['MsgId']) ? $msgTree['MsgId'] : null;
+        if ($this->MsgType == 'event')
+        {
+            $this->Event = $msgTree['Event'];
+        }
 
         return $msgTree;
     }
@@ -140,6 +144,10 @@ abstract class Base
         if (! is_null($this->MsgId))
         {
             $base["MsgId"] = $this->MsgId;
+        }
+        if ($this->MsgType == "event")
+        {
+            $base["Event"] = $this->Event;
         }
         $datas = $base + $this->properties;
         

@@ -17,4 +17,11 @@ abstract class Base extends \Lychee\Message\Base
      * @var string
      */
     protected $MsgType = "event";
+
+    /**
+     * 事件类型
+     *
+     * @var string
+     */
+    protected $Event;
 }
