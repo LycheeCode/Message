@@ -12,6 +12,13 @@ namespace Lychee\Message\Event;
 class Scan extends Base
 {
     /**
+     * 事件类型
+     *
+     * @var string
+     */
+    protected $Event = "SCAN";
+
+    /**
      * 检验属性完整性
      *
      * @return boolean
@@ -56,7 +63,7 @@ class Scan extends Base
     }
 
     /**
-     * 获取 Ticket
+     * 设置 Ticket
      *
      * @param string $ticket
      * @return self

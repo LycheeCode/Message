@@ -12,6 +12,13 @@ namespace Lychee\Message\Event;
 class View extends Base
 {
     /**
+     * 事件类型
+     *
+     * @var string
+     */
+    protected $Event = "VIEW";
+
+    /**
      * 检验属性完整性
      *
      * @return boolean

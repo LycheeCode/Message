@@ -12,6 +12,13 @@ namespace Lychee\Message\Event;
 class Location extends Base
 {
     /**
+     * 事件类型
+     *
+     * @var string
+     */
+    protected $Event = "LOCATION";
+
+    /**
      * 检验属性完整性
      *
      * @return boolean

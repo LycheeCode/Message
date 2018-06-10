@@ -12,6 +12,13 @@
 class Click extends Base
 {
     /**
+     * 事件类型
+     *
+     * @var string
+     */
+    protected $Event = "CLICK";
+
+    /**
      * 检验属性完整性
      *
      * @return boolean

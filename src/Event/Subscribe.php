@@ -12,6 +12,13 @@ namespace Lychee\Message\Event;
 class Subscribe extends Base
 {
     /**
+     * 事件类型
+     *
+     * @var string
+     */
+    protected $Event = "subscribe";
+
+    /**
      * 检验属性完整性
      *
      * @return boolean
@@ -28,7 +35,6 @@ class Subscribe extends Base
             {
                 $this->properties[$property] = $tree[$property];
             }
-            
         }
         return true;
     }
@@ -66,7 +72,7 @@ class Subscribe extends Base
     }
 
     /**
-     * 获取 Ticket
+     * 设置 Ticket
      *
      * @param string $ticket
      * @return self
