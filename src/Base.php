@@ -156,6 +156,30 @@ abstract class Base
         return $dom->saveXML($xmlBody);
     }
 
+    /**
+     * 将 message model 转换成数组
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $base = [
+            "MsgType"      => $this->MsgType,
+            "FromUserName" => $this->FromUserName,
+            "ToUserName"   => $this->ToUserName,
+            "CreateTime"   => $this->CreateTime,
+        ];
+        if (! is_null($this->MsgId))
+        {
+            $base["MsgId"] = $this->MsgId;
+        }
+        if ($this->MsgType == 'event')
+        {
+            $base["Event"] = $this->Event;
+        }
+        return array_merge($base, $this->properties);
+    }
+
     private function traverseXML(\DOMElement $element): array
     {
         $tree = [];
