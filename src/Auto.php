@@ -9,6 +9,8 @@
 
 namespace Lychee\Message;
 
+libxml_disable_entity_loader(true);
+
 use \DOMDocument;
 
 class Auto
