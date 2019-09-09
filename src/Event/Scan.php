@@ -2,7 +2,7 @@
 
 /**
  * 扫描带参二维码事件消息类
- * 
+ *
  * @package Lychee\Message\Event
  * @author Y!an <i@yian.me>
  */
@@ -29,13 +29,10 @@ class Scan extends Base
             "EventKey",
             "Ticket",
         ];
-        foreach ($validateList as $property)
-        {
-            if (isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (isset($tree[$property])) {
                 $this->properties[$property] = $tree[$property];
             }
-            
         }
         return true;
     }

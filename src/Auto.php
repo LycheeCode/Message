@@ -2,7 +2,7 @@
 
 /**
  * 自动识别消息类型类
- * 
+ *
  * @package Lychee\Message
  * @author Y!an <i@yian.me>
  */
@@ -41,39 +41,29 @@ class Auto
         $doc->loadXML($xml);
 
         $msgType = $doc->getElementsByTagName("MsgType");
-        if (! $msgType->length)
-        {
+        if (! $msgType->length) {
             throw new \Exception("Invalid msg");
         }
         $msgType = $msgType->item(0)->nodeValue;
 
         $className = "Lychee\\Message\\";
 
-        if ($msgType == "event")
-        {
+        if ($msgType == "event") {
             $event = $doc->getElementsByTagName("Event");
-            if (! $event->length)
-            {
+            if (! $event->length) {
                 throw new \Exception("Invalid msg");
             }
             $event = $event->item(0)->nodeValue;
-            if (in_array($event, $eventList))
-            {
+            if (in_array($event, $eventList)) {
                 $className .= "Event\\" . ucfirst($event);
                 return new $className($xml);
             }
             throw new \Exception("Invalid msg");
-        }
-        else
-        {
-            if (in_array($msgType, $typeList))
-            {
-                if ($msgType == "shortvideo")
-                {
+        } else {
+            if (in_array($msgType, $typeList)) {
+                if ($msgType == "shortvideo") {
                     $className .= "ShortVideo";
-                }
-                else
-                {
+                } else {
                     $className .= ucfirst($msgType);
                 }
                 return new $className($xml);

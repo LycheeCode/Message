@@ -2,7 +2,7 @@
 
 /**
  * 地理位置消息类
- * 
+ *
  * @package Lychee\Message
  * @author Y!an <i@yian.me>
  */
@@ -34,10 +34,8 @@ class Location extends Base
             "Scale",
             "Label"
         ];
-        foreach ($validateList as $property)
-        {
-            if (! isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (! isset($tree[$property])) {
                 return false;
             }
             $this->properties[$property] = $tree[$property];

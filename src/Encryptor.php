@@ -2,7 +2,7 @@
 
 /**
  * 消息加解密类
- * 
+ *
  * @package Lychee\Message
  * @author Y!an <i@yian.me>
  */
@@ -47,22 +47,19 @@ class Encryptor
      * 加密 xml 数据
      *
      * @param string $xml
-     * 
+     *
      * @return string
-     * 
+     *
      * @throws Exception
      */
     public function encrypt(string $xml): string
     {
-        try
-        {
+        try {
             $xml = $this->pkcs7Pad($this->randStr().pack('N', strlen($xml)).$xml.$this->appid, 32);
 
             $iv = substr($this->key, 0, 16);
             $Encrypt = openssl_encrypt($xml, "AES-256-CBC", $this->key, OPENSSL_ZERO_PADDING, $iv);
-        }
-        catch (\Throwable $e)
-        {
+        } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
         $TimeStamp = time();
@@ -87,9 +84,9 @@ class Encryptor
      * @param string $sign
      * @param string $timestamp
      * @param string $nonce
-     * 
+     *
      * @return string
-     * 
+     *
      * @throws Exception
      */
     public function decrypt(string $rawXMLData, string $sign, string $timestamp, string $nonce): string
@@ -97,14 +94,12 @@ class Encryptor
         $xml = new DOMDocument;
         $xml->loadXML($rawXMLData);
         $encrypt = $xml->getElementsByTagName("Encrypt");
-        if (! $encrypt->length)
-        {
+        if (! $encrypt->length) {
             throw new \Exception("Invalid data");
         }
         $encrypt = $encrypt->item(0)->nodeValue;
         
-        if ($this->sign($this->token, $encrypt, $timestamp, $nonce) != $sign)
-        {
+        if ($this->sign($this->token, $encrypt, $timestamp, $nonce) != $sign) {
             throw new \Exception("Invalid Sign");
         }
 
@@ -115,8 +110,7 @@ class Encryptor
         $content = substr($result, 16, strlen($result));
         $contentLen = unpack('N', substr($content, 0, 4))[1];
 
-        if (trim(substr($content, $contentLen + 4)) !== $this->appid)
-        {
+        if (trim(substr($content, $contentLen + 4)) !== $this->appid) {
             throw new \Exception('Invalid appid');
         }
 
@@ -135,8 +129,7 @@ class Encryptor
      */
     public function pkcs7Pad(string $text, int $blockSize): string
     {
-        if ($blockSize > 256)
-        {
+        if ($blockSize > 256) {
             throw new Exception('$blockSize may not be more than 256');
         }
         $padding = $blockSize - (strlen($text) % $blockSize);
@@ -155,8 +148,7 @@ class Encryptor
     public function pkcs7Unpad(string $text): string
     {
         $pad = ord(substr($text, -1));
-        if ($pad < 1 || $pad > 32)
-        {
+        if ($pad < 1 || $pad > 32) {
             $pad = 0;
         }
 
@@ -186,8 +178,7 @@ class Encryptor
     {
         $dict = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456798";
         $str = "";
-        for ($i = 0; $i < $length; $i++)
-        {
+        for ($i = 0; $i < $length; $i++) {
             $str .= $dict[mt_rand(0, strlen($dict) - 1)];
         }
         return $str;

@@ -2,7 +2,7 @@
 
 /**
  * 链接消息类
- * 
+ *
  * @package Lychee\Message
  * @author Y!an <i@yian.me>
  */
@@ -33,10 +33,8 @@ class Link extends Base
             "Description",
             "Url",
         ];
-        foreach ($validateList as $property)
-        {
-            if (! isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (! isset($tree[$property])) {
                 return false;
             }
             $this->properties[$property] = $tree[$property];

@@ -21,23 +21,19 @@ class News extends Base
     protected function validateProperties(array $tree): bool
     {
         if (! isset($tree["ArticleCount"])
-         || ! isset($tree["Articles"]))
-        {
+         || ! isset($tree["Articles"])) {
             return false;
         }
         $this->properties["ArticleCount"] = $tree["ArticleCount"];
-        for ($i = 0; $i < $tree["ArticleCount"]; $i++)
-        {
+        for ($i = 0; $i < $tree["ArticleCount"]; $i++) {
             $articleElemets = [
                 "Title",
                 "Description",
                 "PicUrl",
                 "Url"
             ];
-            foreach ($articleElemets as $el)
-            {
-                if (! isset($tree["Articles"][$i][$el]))
-                {
+            foreach ($articleElemets as $el) {
+                if (! isset($tree["Articles"][$i][$el])) {
                     return false;
                 }
                 $this->properties["Articles"][$i][$el] = $tree["Articles"][$i][$el];
