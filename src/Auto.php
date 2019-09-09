@@ -53,7 +53,7 @@ class Auto
             if (! $event->length) {
                 throw new \Exception("Invalid msg");
             }
-            $event = $event->item(0)->nodeValue;
+            $event = strtolower($event->item(0)->nodeValue);
             if (in_array($event, $eventList)) {
                 $className .= "Event\\" . ucfirst($event);
                 return new $className($xml);
