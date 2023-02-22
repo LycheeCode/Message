@@ -45,7 +45,7 @@ class Auto
         {
             throw new \Exception("Invalid msg");
         }
-        $msgType = $msgType->item(0)->nodeValue;
+        $msgType = strtolower($msgType->item(0)->nodeValue);
 
         $className = "Lychee\\Message\\";
 
@@ -56,7 +56,7 @@ class Auto
             {
                 throw new \Exception("Invalid msg");
             }
-            $event = $event->item(0)->nodeValue;
+            $event = strtolower($event->item(0)->nodeValue);
             if (in_array($event, $eventList))
             {
                 $className .= "Event\\" . ucfirst($event);
