@@ -2,7 +2,7 @@
 
 /**
  * 图片消息类
- * 
+ *
  * @package Lychee\Message
  * @author Y!an <i@yian.me>
  */
@@ -31,10 +31,8 @@ class Image extends Base
         $validateList = [
             "MediaId",
         ];
-        foreach ($validateList as $property)
-        {
-            if (! isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (! isset($tree[$property])) {
                 return false;
             }
             $this->properties[$property] = $tree[$property];

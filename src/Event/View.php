@@ -2,7 +2,7 @@
 
 /**
  * 点击菜单（链接）事件消息类
- * 
+ *
  * @package Lychee\Message\Event
  * @author Y!an <i@yian.me>
  */
@@ -28,10 +28,8 @@ class View extends Base
         $validateList = [
             "EventKey",
         ];
-        foreach ($validateList as $property)
-        {
-            if (! isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (! isset($tree[$property])) {
                 return false;
             }
             $this->properties[$property] = $tree[$property];

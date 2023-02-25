@@ -2,7 +2,7 @@
 
 /**
  * 音乐消息类
- * 
+ *
  * @package Lychee\Message
  * @author Y!an <i@yian.me>
  */
@@ -31,10 +31,8 @@ class Music extends Base
         $validateList = [
             "ThumbMediaId",
         ];
-        foreach ($validateList as $property)
-        {
-            if (! isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (! isset($tree[$property])) {
                 return false;
             }
             $this->properties[$property] = $tree[$property];
@@ -90,7 +88,7 @@ class Music extends Base
         $this->properties["MusicUrl"] = $MusicUrl;
         return $this;
     }
-    
+
     /**
      * 设置高质量音乐 URL
      *

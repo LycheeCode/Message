@@ -2,7 +2,7 @@
 
 /**
  * 取消关注事件消息类
- * 
+ *
  * @package Lychee\Message\Event
  * @author Y!an <i@yian.me>
  */

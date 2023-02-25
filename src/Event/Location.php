@@ -2,7 +2,7 @@
 
 /**
  * 上报地理位置事件消息类
- * 
+ *
  * @package Lychee\Message\Event
  * @author Y!an <i@yian.me>
  */
@@ -30,10 +30,8 @@ class Location extends Base
             "Longitude",
             "Precision",
         ];
-        foreach ($validateList as $property)
-        {
-            if (! isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (! isset($tree[$property])) {
                 return false;
             }
             $this->properties[$property] = $tree[$property];

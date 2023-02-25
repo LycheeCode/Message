@@ -2,7 +2,7 @@
 
 /**
  * 事件消息类基类
- * 
+ *
  * @package Lychee\Message\Event
  * @author Y!an <i@yian.me>
  */

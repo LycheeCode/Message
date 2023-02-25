@@ -2,7 +2,7 @@
 
 /**
  * 关注事件消息类
- * 
+ *
  * @package Lychee\Message\Event
  * @author Y!an <i@yian.me>
  */
@@ -29,10 +29,8 @@ class Subscribe extends Base
             "EventKey",
             "Ticket",
         ];
-        foreach ($validateList as $property)
-        {
-            if (isset($tree[$property]))
-            {
+        foreach ($validateList as $property) {
+            if (isset($tree[$property])) {
                 $this->properties[$property] = $tree[$property];
             }
         }
